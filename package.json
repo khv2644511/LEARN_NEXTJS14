@@ -1,0 +1,22 @@
+{
+  "name": "learn_nextjs",
+  "version": "1.0.0",
+  "description": "next.js14 공부하기",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.19",
+    "@types/react": "18.2.56",
+    "typescript": "5.3.3"
+  }
+}
