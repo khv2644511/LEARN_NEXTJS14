@@ -60,3 +60,121 @@ next.js는 모든 컴포넌트를 서버에서 render 해서 그 html을 가지�
 
 
 `❗️NextJs에서는 "use client"가 사용여부와 관계없이, 모든 컴포넌트와 페이지들은 먼저 backend(서버)에서 render 된다. 이것들은 HTML로 변환된다. 그리고 변환된 HTML은 브라우저로 넘어간다.❗️`
+
+
+## Day4 - Hydration
+Day3에서 NextJs는 페이지와 컴포넌트들을 기본적으로 Backend에서 Render한다는 것과 NextJs는 코드를 HTML로 변환하고 HTML을 브라우저에 넘긴다는 것을 배웠다. 
+그 다음에는 어떤 일이 일어날까? 사용자가 최초 HTML을 본 뒤에 어떤 일이 발생하는지, React가 언제 활성화되는지 알아보자.
+
+
+```jsx
+// components/navigation.tsx
+
+"use client"
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+export default function Navigation() {
+    const path = usePathname();
+    // console.log(path);
+    return (<nav>
+        <ul>
+            <li>
+                <Link href='/'>Home</Link> {path === '/' ? "🩷" : ""}
+            </li>
+            <li>
+                <Link href='/about-us'>About Us</Link> {path === '/about-us' ? "🩷" : ""}
+            </li>
+        </ul>
+    </nav>);
+}
+```
+
+![크롬개발자도구에서 disable javascript](image.png)
+
+![hard navigation](<Feb-23-2024 15-41-44.gif>)
+
+크롬 개발자도구 > Source > JavaScript를 비활성화 하고 네비게이션을 클릭하여 페이지가 이동될 때 보이는 것 처럼 hard navigation(새로고침)이 일어난다.
+- Soft Navigation: 어플리케이션이 활성화 된 상태에서 Link, Router 등을 통해 페이지를 Navigate 하는 경우
+- Hard Navigation: 전체 페이지가 새로고침 되는 경우. (ex. URL을 통한 접속, 새로고침 등) default.tsx를 먼저 렌더 시도하고, 불가능하면 404를 렌더한다.
+
+
+![enable javascript](image-1.png)
+
+![soft navigation](<Feb-23-2024 15-53-13.gif>)
+
+다시 JavaScript를 활성화한 후 확인해보면 새로고침이 되지 않고 soft navigation이 일어난다.
+이것이 바로 React가 `Hydrated` 되었다고 한다.
+
+처음에는 anchors 묶음이였다가 React component로 변환되는 것이다.
+네비게이션에 click이 발생되면 React가 끼어들어 전체 페이지 전체를 reload 하지 않고 빠르게 navigate 할 수 있게 된다.
+click이 발생하면 anchor가 아닌 Link component로 처리되는 것이다.
+
+페이지에 도달하면 UI를 가지고 있는 dummy HTML이 있고, 그리고 나서 프레임워크는 즉시 로드를 시작한다.
+React가 로드되고, Components가 로드되고, 모든것이 초기화 된다. 그러면 application은 React App이 된다.
+이 과정 후에 비로소 interactive해지고, navigation이 빨라지는 것을 볼 수 있으며, hard refresh없이 Client Side Navigation이 가능하다.
+
+예를 들어 설명해보자
+1. 사람들이 /about-us 페이지로 가고 싶어한다.
+2. nextJs는 그 요청을 보고 우리의 component를 interactive 하지 않은 dummy HTML로 변환하여 렌더링한다.
+3. 서버 사이드 렌더링이므로 초기 로딩속도가 빨라 사람들은 기뻐한다 :)
+4. 그리고 사용자가 기뻐하는 동안 뒤에서 프레임워크는 Load를 시작해 dummy HTML에다가 새로운 React application을 초기화하고 있다.
+5. React application이 초기화 된 후 Client Side Navigation이 가능하다.
+
+<다이어그램으로 보기>
+
+`
+/about-us ----> Boring HTML ----> people :) ----> init(Boring HTML)  ---> soft navigaion!!
+`
+
+만약 어떠한 이유로 JavaScript Load에 긴 시간이 걸리고, Framework가 initailize하는데이 아주 긴 시간이 걸린다고 가정해보자.
+사용자는 네비게이션을 통해 페이지 사이를 navigate할 수 있지만, 아직 React Component가 아니기 때문에 hard navigation이 일어나고 이동될 때마다 새로고침이 발생될 것이다. 그러다 JavaScript가 로드되어 모든 준비가 완료된 순간 React Component가 되어 interactive한  soft navigation이 가능해지는 것이다.
+
+```jsx
+// components/navigation.tsx
+// 클릭하면 카운트가 증가하는 버튼을 추가했다.
+"use client"
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+export default function Navigation() {
+    const path = usePathname();
+    const [count, setCount ] = useState(0)
+    // console.log(path);
+    return (<nav>
+        <ul>
+            <li>
+                <Link href='/'>Home</Link> {path === '/' ? "🩷" : ""}
+            </li>
+            <li>
+                <Link href='/about-us'>About Us</Link> {path === '/about-us' ? "🩷" : ""}
+            </li>
+            <li>
+                <button onClick={()=> setCount((c) => c + 1)}>{count}</button>
+            </li>
+        </ul>
+    </nav>);
+}
+```
+JavaScript를 비활성화 하고 버튼을 클릭하면 click은 되지만 카운트가 증가되지 않는다. 왜냐하면 버튼에 eventListener가 연결되지 않았기 때문이다.
+그러나 JavaScript를 다시 활성화되었다면(JavaScript가 로드되었다면) React가 버튼에 eventListener를 연결시켜 비로소 컴포넌트가 interactive해진다.
+
+다시 예를 들어 설명해보자
+1. /about-us에 접속
+2. 0이 쓰여진 버튼이 사용자에게 보여짐(JavaScript 로드 전)
+3. 사용자는 기뻐함 :) 동시에, 뒤쪽에서 프레임워크를 로드하고 프레임워크가 initialize 됨(JavaScript 로드 완료)
+4. 비로소 버튼은 우리가 만든 onClick eventListener가 연결된 버튼이 됨
+
+<다이어그램으로 보기>
+
+`/about-us ----> <button>0</button> ----> people :) ----> <button onClick>`
+
+이 과정이 Hydration 이다!
+
+### 즉, Hydration이란?
+- 단순 HTML을 React application으로 초기화하는 작업
+- Next.js는 초기 Html 파일을 먼저 전달하고 이후 HTML 요소들을 React 컴포넌트로 변환 및 이벤트리스너를 부착하여 React DOM에서 관리하게 한다. 이 과정을 Hydration(수분 보충)이라고 한다.
+- 서버사이드 렌더링(SSR)을 통해 만들어 진 인터랙티브 하지 않는 HTML을 클라이언트 측 자바스크립트를 사용하여 인터랙티브한 리액트 컴포넌트로 변환하는 과정을 말한다.(서버 환경에서 이미 렌더링된 HTML에 React를 붙이는 것)
