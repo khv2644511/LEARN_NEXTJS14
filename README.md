@@ -178,3 +178,12 @@ JavaScript를 비활성화 하고 버튼을 클릭하면 click은 되지만 카�
 - 단순 HTML을 React application으로 초기화하는 작업
 - Next.js는 초기 Html 파일을 먼저 전달하고 이후 HTML 요소들을 React 컴포넌트로 변환 및 이벤트리스너를 부착하여 React DOM에서 관리하게 한다. 이 과정을 Hydration(수분 보충)이라고 한다.
 - 서버사이드 렌더링(SSR)을 통해 만들어 진 인터랙티브 하지 않는 HTML을 클라이언트 측 자바스크립트를 사용하여 인터랙티브한 리액트 컴포넌트로 변환하는 과정을 말한다.(서버 환경에서 이미 렌더링된 HTML에 React를 붙이는 것)
+
+## Day5 - use client
+모든 컴포넌트는 backend에서 render되고, "use client"를 작성한 컴포넌트에서만 hydrate되어 interactive해진다.
+우리는 어떤 컴포넌트에 "use client"를 작성할지 고민하지 않아도 된다.
+만약 useState를 사용하고 있는 컴포넌트에 "use client"를 작성하지 않았다면, NextJs에서 에러를 던져준다.(useState를 사용한다는건 interactive한 컴포넌트이기 때문에)
+
+기본적으로 "use client"를 작성하지 않은 컴포넌트는 서버 사이드 렌더링이 된다. 서버 사이드 컴포넌트는 자바스크립트 코드를 로드할 필요가 없어 페이지 로딩 속도가 빨라진다는 장점이 있다.
+
+
