@@ -278,3 +278,29 @@ export default function MovieDetail(props) {
     -   isLoading과 같은 로딩상태도 직접 관리해야 한다.
     -   React App <==> API <===> DB
     -   직접 서버와 통신하는것이 아닌 API를 통해서만 통신한다.
+
+```jsx
+'use client';
+
+import { useEffect, useState } from 'react';
+
+// 클라이언트 사이드 렌더링에선 메타데이터를 사용할 수 없다.
+// export const metadata = {
+//     title: 'Home',
+// };
+
+export default function Page() {
+    const [isLoading, setIsLoading] = useState(true);
+    const [movies, setMovies] = useState([]);
+    const getMovies = async () => {
+        const response = await fetch('https://nomad-movies.nomadcoders.workers.dev/movies');
+        const json = await response.json();
+        setMovies(json);
+        setIsLoading(false);
+    };
+    useEffect(() => {
+        getMovies();
+    }, []);
+    return <div>{isLoading ? 'Loading...' : JSON.stringify(movies)}</div>;
+}
+```
