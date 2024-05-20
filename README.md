@@ -231,11 +231,10 @@ NextJs는 layout 컴포넌트에 있는 export된 컴포넌트를 제일 먼저 
 `1,2에 레이아웃은 상쇄되는게 아니라 중첩된다.`
 Nest JS는 URL를 통해 폴더로 들어가서 그 폴더에 레이아웃이 있는지 확인하고, 있다면 그 레이아웃을 밖에 있는 다른 레이아웃 안에 렌더링한다.
 
-
 ## Day7 - Meta Data
 
-- 메타데이터는 컴포넌트가 아닌, 페이지나 레이아웃 내에서만 사용할 수 있고, 서버 컴포넌트에서만 메타데이터를 사용할 수 있다.
-- 레이아웃처럼 메타데이터도 템플릿을 만들 수 있다.
+-   메타데이터는 컴포넌트가 아닌, 페이지나 레이아웃 내에서만 사용할 수 있고, 서버 컴포넌트에서만 메타데이터를 사용할 수 있다.
+-   레이아웃처럼 메타데이터도 템플릿을 만들 수 있다.
 
 ```
 import { Metadata } from "next"
@@ -249,3 +248,25 @@ export const metadata: Metadata = {
   description: 'The bedt movies on thie best framework',
 }
 ```
+
+## Day7 - Dynamic Routes
+
+-   영화 목록 페이지에서 영화 하나를 클릭헤 영화 디테일 페이지로 이동할 때 movies/1 이런식으로 url을 사용한다.
+-   리액트는 movies/:id 다이나믹 라우트를 사용할 때 hook을 사용했으나, Next에서는 훅이 필요없다.
+-   다이나믹 라우트 만드는 방법은 대괄호를 사용한다.
+-   movies/[id]/page.tsx
+
+    -   아래와 같은 url은 모두 위에 작성한 라우트에 매칭된다.
+    -   movies/1234
+    -   moviese/www
+
+-   props로 params, searchParams를 받을 수 있고, 백엔드에서 실행되기 때문에 브라우저가 아닌 백엔드 콘솔에서 id, searchParams를 확인할 수 있다.
+
+```
+export default function MovieDetail(props) {
+    console.log(props)
+    return <h1>Movie</h1>
+}
+```
+
+`{ params: { id: '11' }, searchParams: { page: "'ke'" } }`
