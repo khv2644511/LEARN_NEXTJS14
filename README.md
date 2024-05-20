@@ -328,3 +328,9 @@ export default async function HomePage() {
     return <div>{JSON.stringify(movies)}</div>;
 }
 ```
+
+## Day11 - Loading Components
+
+-   Data Fetching이 Server Side에서 일어나는 경우, fetch 함수가 완료되기 전까지 로딩상태동안 사용자 UI가 없다 => 이 말은 데이터 응답이 느린경우 백엔드에서는 렌더링 작업이 이루어지지 않는 동안 사용자는 아무것도 보지 못하는 상태가 된다.
+-   이때 사용할 수 있는 것이 `loading.tsx` 파일이다.
+-   loading.tsx에 로딩상태 UI를 작성하면, fetch가 끝나기 전(로딩중)에 빈 화면이 아닌, 페이지의 일부분(layout)과 로딩상태 화면(loading.tsx)을 보여줄 수 있다.
