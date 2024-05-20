@@ -249,7 +249,7 @@ export const metadata: Metadata = {
 }
 ```
 
-## Day7 - Dynamic Routes
+## Day8 - Dynamic Routes
 
 -   영화 목록 페이지에서 영화 하나를 클릭헤 영화 디테일 페이지로 이동할 때 movies/1 이런식으로 url을 사용한다.
 -   리액트는 movies/:id 다이나믹 라우트를 사용할 때 hook을 사용했으나, Next에서는 훅이 필요없다.
@@ -270,3 +270,11 @@ export default function MovieDetail(props) {
 ```
 
 `{ params: { id: '11' }, searchParams: { page: "'ke'" } }`
+
+## Day9 - Data Fetching_Client Side
+
+-   클라이언트 사이드에서 데이터 페칭 방법
+    -   useState, useEffect 훅을 사용해 데이터를 관리해야한다.
+    -   isLoading과 같은 로딩상태도 직접 관리해야 한다.
+    -   React App <==> API <===> DB
+    -   직접 서버와 통신하는것이 아닌 API를 통해서만 통신한다.
