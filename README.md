@@ -304,3 +304,27 @@ export default function Page() {
     return <div>{isLoading ? 'Loading...' : JSON.stringify(movies)}</div>;
 }
 ```
+
+## Day10 - Data Fetching_Server Side
+
+-   서버 컴포넌트에서 데이터를 페칭하면 fetch된 url을 자동으로 캐싱시켜준다.
+-   최초 1번만 데이터 fetch가 일어나고, 그 후엔 캐시된 데이터가 보여지기 때문에 성능에서 빠른 속도를 보인다.
+
+```jsx
+export const metadata = {
+    title: 'Home',
+};
+const URL = 'https://nomad-movies.nomadcoders.workers.dev/movies';
+
+async function getMovies() {
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+    const response = await fetch(URL);
+    const json = await response.json();
+    return json;
+}
+
+export default async function HomePage() {
+    const movies = await getMovies();
+    return <div>{JSON.stringify(movies)}</div>;
+}
+```
