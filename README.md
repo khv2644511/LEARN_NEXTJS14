@@ -334,3 +334,47 @@ export default async function HomePage() {
 -   Data Fetching이 Server Side에서 일어나는 경우, fetch 함수가 완료되기 전까지 로딩상태동안 사용자 UI가 없다 => 이 말은 데이터 응답이 느린경우 백엔드에서는 렌더링 작업이 이루어지지 않는 동안 사용자는 아무것도 보지 못하는 상태가 된다.
 -   이때 사용할 수 있는 것이 `loading.tsx` 파일이다.
 -   loading.tsx에 로딩상태 UI를 작성하면, fetch가 끝나기 전(로딩중)에 빈 화면이 아닌, 페이지의 일부분(layout)과 로딩상태 화면(loading.tsx)을 보여줄 수 있다.
+
+## Day12 - Parallel Requests(최적화)
+
+import { API_URL } from '../../../(home)/page';
+
+-   아래 코드에서 getMovie함수와 getVideos함수는 순차적으로 실행된다.
+-   getMovie가 시간이 오래 걸리는 함수라면 getVideos가 실행되는데까지 오랜 시간이 걸릴것이다.
+-   이를 보완할 수 있는 것이 `Promise.all`이다. `Promise.all`을 사용하면 순차적이 아닌, 병렬적으로 함수를 실행한다.
+
+```jsx
+async function getMovie(id: string) {
+    console.log(`Fetching movies: ${Date.now()}`);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    const respons = await fetch(`${API_URL}/${id}`);
+    return respons.json();
+}
+
+async function getVideos(id: string) {
+    console.log(`Fetching videos: ${Date.now()}`);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    const response = await fetch(`${API_URL}/${id}/videos`);
+    return response.json();
+}
+
+export default async function MovieDetail({ params: { id } }: { params: { id: string } }) {
+    console.log('start fetching');
+    const movie = await getMovie(id); // 5초 후 실행
+    const videos = await getVideos(id); // 10초 후 실행
+    console.log('end fetching');
+    return <h1>{movie.title}</h1>;
+}
+```
+
+### Promise.all 사용법
+
+```jsx
+export default async function MovieDetail({ params: { id } }: { params: { id: string } }) {
+    console.log('start fetching');
+    const [movie, videos] = await Promise.all([getMovie(id), getVideos(id)]); // 모두 5초 후 실행
+    console.log('end fetching');
+    return <h1>{movie.title}</h1>;
+}
+```
