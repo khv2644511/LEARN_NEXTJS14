@@ -230,3 +230,22 @@ NextJs는 layout 컴포넌트에 있는 export된 컴포넌트를 제일 먼저 
 
 `1,2에 레이아웃은 상쇄되는게 아니라 중첩된다.`
 Nest JS는 URL를 통해 폴더로 들어가서 그 폴더에 레이아웃이 있는지 확인하고, 있다면 그 레이아웃을 밖에 있는 다른 레이아웃 안에 렌더링한다.
+
+
+## Day7 - Meta Data
+
+- 메타데이터는 컴포넌트가 아닌, 페이지나 레이아웃 내에서만 사용할 수 있고, 서버 컴포넌트에서만 메타데이터를 사용할 수 있다.
+- 레이아웃처럼 메타데이터도 템플릿을 만들 수 있다.
+
+```
+import { Metadata } from "next"
+import Navigation from "../components/navigation"
+
+export const metadata: Metadata = {
+    title: {
+        template: "%s | Next Moviese",
+        default: 'Loading'
+    },
+  description: 'The bedt movies on thie best framework',
+}
+```
