@@ -2,7 +2,8 @@ import { Suspense } from 'react';
 import MovieInfo from '../../../../components/movie-info';
 import MovieVideos from '../../../../components/movie-videos';
 
-export default async function MovieDetail({ params: { id } }: { params: { id: string } }) {
+// 해당 컴포넌트에서는 async를 사용하지 않아도 됨
+export default function MovieDetail({ params: { id } }: { params: { id: string } }) {
     // console.log('start fetching');
     // const [movie, videos] = await Promise.all([getMovie(id), getVideos(id)]);
     // console.log('end fetching');

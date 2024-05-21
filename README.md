@@ -409,7 +409,7 @@ export default async function MovieDetail({ params: { id } }: { params: { id: st
             <Suspense fallback={<h1>Loading movie info</h1>}>
                 <MovieInfo id={id} />
             </Suspense>
-            // 2개의 Suspense로 감싼 컴포넌트의 fetch는 병렬적으로 실행됨
+            // 2개의 Suspense로 감싼 컴포넌트의 fetch는 병렬적으로 실행되어 서로를 기다리지 않고, 먼저 실행완료된 UI를 먼저 보여준다
             <Suspense fallback={<h1>Loading movie vidieos</h1>}>
                 <MovieVideos id={id} />
             </Suspense>
