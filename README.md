@@ -378,3 +378,42 @@ export default async function MovieDetail({ params: { id } }: { params: { id: st
     return <h1>{movie.title}</h1>;
 }
 ```
+
+## Day13 - Suspense(최적화)
+
+-   위에서 Promise.all 사용 시, getMovie(), getVideos() 함수가 병렬적으로 실행되긴 하지만, UI를 보기 위해선 두 함수 모두가 종료되어야한다.
+-   getMovie()와 관련된 UI와, getVideos()와 관련된 UI를 구분해, 두 함수가 모두 완료될 때까지 기다리지 않고, 각각 UI를 보여주기 위해 Suspense를 사용한다.
+
+### loading.tsx과 suspense
+
+-   loading.tsx
+    -   페이지 안에서 await를 하고 있다면(로딩상태라면), `loading.tsx` 파일이 전체 페이지의 UI를 완전히 대체했다.
+-   suspense
+    -   fetch 해야하는 component를 분리해서 해당 컴포넌트에서만 로딩 상태를 가지도록 한다. 따라서, 로딩상태에서 페이지에 UI를 표시할 수 있다.
+    -   구체적으로 페이지의 어느 부분이 로딩 상태여야하는지 명시해줄 수 있다.
+    -   여러개의 fetch가 필요한 페이지에서 `병렬적`으로 실행할 수 있다,
+
+### suspense 사용법
+
+```jsx
+import { Suspense } from 'react';
+import MovieInfo from '../../../../components/movie-info';
+import MovieVideos from '../../../../components/movie-videos';
+
+export default async function MovieDetail({ params: { id } }: { params: { id: string } }) {
+    return (
+        <div>
+            // 로딩과 관계없이 해당 UI를 표시할 수 있음
+            <h3>Movie detail page</h3>
+            // Suspense를 통해 로딩 상태를 가지는 컴포넌트를 명시해줄 수 있고, fallback을 통해 로딩중에 띄울 UI를 정의할 수 있음
+            <Suspense fallback={<h1>Loading movie info</h1>}>
+                <MovieInfo id={id} />
+            </Suspense>
+            // 2개의 Suspense로 감싼 컴포넌트의 fetch는 병렬적으로 실행됨
+            <Suspense fallback={<h1>Loading movie vidieos</h1>}>
+                <MovieVideos id={id} />
+            </Suspense>
+        </div>
+    );
+}
+```
