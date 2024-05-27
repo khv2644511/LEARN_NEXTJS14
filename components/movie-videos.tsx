@@ -2,8 +2,8 @@ import { API_URL } from '../app/(home)/page';
 
 async function getVideos(id: string) {
     console.log(`Fetching videos: ${Date.now()}`);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    throw new Error('something broke...');
+    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    // throw new Error('something broke...');
 }
 
 export default async function MovieVideos({ id }: { id: string }) {
