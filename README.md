@@ -423,3 +423,20 @@ export default async function MovieDetail({ params: { id } }: { params: { id: st
 -   해당 페이지와 페이지 내의 컴포넌트에서 에러가 발생했을 떄, 에러 처리를 위한 페이지는 `error.tsx` 파일을 사용할 수 있다.
 -   페이지와 동일한 레벨에 `error.tsx`를 작성하면, 페이지에 에러가 발생했을 때 `error.tsx`가 표시된다.
 -   `(movies)/movies/[id]/page.tsx`와 `(home)/page.tsx` 에 에러처리를 위해서는 각각 error.tsx를 만들어주어야 한다.
+
+## Day15 - Dynamic Metadata
+
+-   metadata도 동적으로 변경할 수 있다
+-   함수 앞에 export를 붙여줘야 한다.
+-   getMovie() 데이터 fetch는 한 번만 실행된다.
+
+```jsx
+import MovieInfo, { getMovie } from '../../../../components/movie-info';
+
+export async function generateMetadata({ params: { id } }: IParams) {
+    const movie = await getMovie(id);
+    return {
+        title: movie.title,
+    };
+}
+```
