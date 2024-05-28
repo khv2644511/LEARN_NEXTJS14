@@ -440,3 +440,12 @@ export async function generateMetadata({ params: { id } }: IParams) {
     };
 }
 ```
+
+## Day16 - Prefetch
+
+-   Link Props (prefetch)
+-   prefecth은 Link 컴포넌트가 사용자의 뷰포트에 들어갈 때(초기 또는 스크롤을 통해) 발생한다.
+-   Next.js는 링크드된 라우트(href에 지정된 라우트)와 해당 데이터를 백그라운드에서 prefetch하고 load하여 클라이언트 측 네비게이션 성능을 향상시킨다.
+-   prefecth는 프로덕션에서만 활성화된다.
+-   기본값 null: prefetch 동작은 정적 또는 동적 경로에 따라 달라진다.
+    https://nextjs.org/docs/app/api-reference/components/link#prefetch
